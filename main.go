@@ -4,10 +4,12 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"github.com/spf13/viper"
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"reverse_proxy/config"
 )
 
 // NewProxy takes target host and creates a reverse proxy
@@ -78,17 +80,32 @@ func getStartParam() StartParams {
 }
 
 func main() {
-	startParams := getStartParam()
+	//startParams := getStartParam()
 
-	proxy, err := NewProxy(startParams.Host)
+	viper.SetConfigName("config")
+	viper.AddConfigPath(".")
+	viper.SetConfigType("yml")
+	viper.AutomaticEnv()
+	var configuration config.Configurations
+
+	if err := viper.ReadInConfig(); err != nil {
+		fmt.Printf("Error reading config file, %s", err)
+	}
+	err := viper.Unmarshal(&configuration)
 	if err != nil {
-		fmt.Printf(`代理地址错误`)
-		return
+		fmt.Printf("Unable to decode into struct, %v", err)
 	}
 
-	// handle all requests to your server using the proxy
-	http.HandleFunc("/", ProxyRequestHandler(proxy))
+	for _, p := range configuration.Proxies {
+		proxy, err := NewProxy(p.TargetUrl)
+		if err != nil {
+			fmt.Printf(`代理地址错误`)
+			return
+		}
 
-	fmt.Printf("启动成功: 代理地址=%v 端口号=%v\n", startParams.Host, startParams.Port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", startParams.Port), nil))
+		http.HandleFunc(p.RouterPath, ProxyRequestHandler(proxy))
+	}
+
+	fmt.Printf("启动成功: 端口号=%v\n", configuration.Port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", configuration.Port), nil))
 }

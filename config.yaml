@@ -1,0 +1,6 @@
+port: 9999
+proxies:
+  - router_path: "/v2"
+    target_url: "http://www.baidu.com/"
+  - router_path: "/v1"
+    target_url: "http://httpbin.org/anything/"

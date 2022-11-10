@@ -8,15 +8,24 @@
 
 在服务上执行二进制文件
 
-./reverse_proxy -h 可以查看支持的参数
+### 准备配置文件
+目录下增加 config.yaml 配置文件
 
-- -host 是你需要反向代理的地址
-- -port 是服务启动端口
+```
+port: 9999
+proxies:
+  - router_path: "/v2"
+    target_url: "https://httpbin.org/anything/v2"
+  - router_path: "/v1"
+    target_url: "https://httpbin.org/anything/v1"
+  - router_path: "/"
+    target_url: "https://httpbin.org/anything/default"
+```
 
 ### 启动
 
 ```shell
-./reverse_proxy -host=https://httpbin.org/anything -port=8080
+./reverse_proxy
 ```
 
 

@@ -1,6 +1,8 @@
 port: 9999
 proxies:
   - router_path: "/v2"
-    target_url: "http://www.baidu.com/"
+    target_url: "https://httpbin.org/anything/v2"
   - router_path: "/v1"
-    target_url: "http://httpbin.org/anything/"
+    target_url: "https://httpbin.org/anything/v1"
+  - router_path: "/"
+    target_url: "https://httpbin.org/anything/default"

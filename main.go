@@ -2,39 +2,22 @@ package main
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 	"log"
 	"net/http"
 	"reverse_proxy/config"
 )
 
 func main() {
-	//startParams := getStartParam()
-
-	viper.SetConfigName("config")
-	viper.AddConfigPath(".")
-	viper.SetConfigType("yml")
-	viper.AutomaticEnv()
-	var configuration config.Configurations
-
-	if err := viper.ReadInConfig(); err != nil {
-		fmt.Printf("Error reading config file, %s", err)
-	}
-	err := viper.Unmarshal(&configuration)
+	err := config.Init()
 	if err != nil {
-		fmt.Printf("Unable to decode into struct, %v", err)
+		fmt.Printf(`初始化配置错误: %+v \n`, err)
+		return
 	}
 
-	for _, p := range configuration.Proxies {
-		proxy, err := NewProxy(p.TargetUrl)
-		if err != nil {
-			fmt.Printf(`代理地址错误`)
-			return
-		}
+	http.HandleFunc("/", HandleRequestAndRedirect)
 
-		http.HandleFunc(p.RouterPath, ProxyRequestHandler(proxy))
-	}
+	port := config.Configuration.Port
+	fmt.Printf("启动成功: 端口号=%v\n", port)
 
-	fmt.Printf("启动成功: 端口号=%v\n", configuration.Port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", configuration.Port), nil))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 }

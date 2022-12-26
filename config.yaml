@@ -1,4 +1,5 @@
 port: 9999
+https: true
 proxies:
   - router_path: "/v2"
     target_url: "https://httpbin.org/anything/v2"

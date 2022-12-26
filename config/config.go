@@ -7,6 +7,7 @@ import (
 
 type Configurations struct {
 	Port    int     `mapstructure:"port"`
+	Https   bool    `mapstructure:"https"`
 	Proxies []Proxy `mapstructure:"proxies"`
 }
 

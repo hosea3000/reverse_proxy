@@ -1,4 +1,7 @@
 port: 9999
+ssl:
+  cert_file: "./ssl/server.crt"
+  key_file: "./ssl/server.key"
 proxies:
   - router_path: "/v2"
     target_url: "https://httpbin.org/anything/v2"

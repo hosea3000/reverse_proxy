@@ -8,11 +8,17 @@ import (
 type Configurations struct {
 	Port    int     `mapstructure:"port"`
 	Proxies []Proxy `mapstructure:"proxies"`
+	SSL     SSL     `mapstructure:"ssl"`
 }
 
 type Proxy struct {
 	RouterPath string `mapstructure:"router_path"`
 	TargetUrl  string `mapstructure:"target_url"`
+}
+
+type SSL struct {
+	CertFile string `mapstructure:"cert_file"`
+	KeyFile  string `mapstructure:"key_file"`
 }
 
 var Configuration Configurations

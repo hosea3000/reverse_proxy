@@ -49,6 +49,7 @@ func createTLSConfig(certFile, keyFile string) (*tls.Config, error) {
 	// 创建TLS配置
 	tlsConfig := &tls.Config{
 		Certificates: []tls.Certificate{cert},
+		ClientAuth:   tls.RequireAndVerifyClientCert,
 	}
 
 	return tlsConfig, nil
